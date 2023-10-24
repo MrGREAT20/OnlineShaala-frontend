@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { Card, Typography } from '@mui/material';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
@@ -5,8 +6,9 @@ import { useState } from 'react';
 export default function Addcourse(){
     const [title, settitle] = useState("");
     const [desc, setdesc] = useState("");
+    const [imageLink, setImage] = useState("");
     function callback2(data){
-        console.log(data);
+        alert("Course Added!")
     }
     function callback1(res){
         res.json().then(callback2);
@@ -26,13 +28,16 @@ export default function Addcourse(){
                             <TextField fullWidth id="description" label="description" variant='outlined' onChange={(e)=>{setdesc(e.target.value)}}/>
                             <br></br>
                             <br></br>
+                            <TextField fullWidth id="imagelink" label="image" variant='outlined' onChange={(e)=>{setImage(e.target.value)}}/>
+                            <br></br>
+                            <br></br>
                             <Button size="large" variant="contained" onClick={() => {
                                 fetch('http://localhost:3000/admin/courses', {
                                     method:"POST",
                                     body:JSON.stringify({
                                         title:title, 
                                         description:desc,
-                                        imageLink:"",
+                                        imageLink:imageLink,
                                         published:true,
                                     }),
                                     headers:{

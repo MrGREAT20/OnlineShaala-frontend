@@ -1,8 +1,25 @@
 import { Typography, Button} from "@mui/material";
 import {useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 
 export default function Appbar(){
     const navigate = useNavigate();
+    const [username, setUsername] = useState(null);
+    useEffect(function(){
+        async function fetchme(){
+            const res = await fetch("http://localhost:3000/admin/me", {
+                method:"GET",
+                headers:{"authorization" : "Bearer " + localStorage.getItem("token")} 
+            });
+            const data = await res.json();
+            if(data.username){
+                setUsername(() => data.username);
+            }
+        }
+
+        fetchme();
+    }, []);
+
     return <div style={{display:'flex', justifyContent: 'space-between'}}>
     {/*YOU KNOW HOW FLEXBOX WORKS NOW, YEH UPAR WALA DIV is a PARENT and iske saare bacche abhi SPACE BETWEEN me separate honge*/}
 
@@ -19,14 +36,17 @@ export default function Appbar(){
         */}
         {/**
             we used the useNavigate HOOK to navigate from one page to another making it seem like a SPA (single
-            page application) because of not refreshing when page changes
+            page application) because of not refreshing when page changes 
         */}
-            <div><Button variant="text" size="small" onClick={()=>{
+            <div>{username===null ? <Button variant="text" size="small" onClick={()=>{
                 navigate("/register")
-            }}>SignUp</Button></div>
-            <div><Button variant="text" size="small" style={{paddingRight:'30px'}} onClick={() => {
+            }}>SignUp</Button> : <div>{username}</div>}</div>
+            <div>{username === null ? <Button variant="text" size="small" style={{paddingRight:'30px'}} onClick={() => {
                 navigate("/login")
-            }}>SignIn</Button></div>
+            }}>SignIn</Button> : <Button variant="text" size="small" style={{paddingRight:'30px'}} onClick={() => {
+                setUsername(() => null);
+                localStorage.setItem("token", null);
+            }}>LogOut</Button>}</div>
         </div>
 
     </div>
